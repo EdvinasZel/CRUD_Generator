@@ -1,0 +1,13 @@
+@extends('layouts.app')
+@section('content')
+    <h1>{{modelName}} show page</h1>
+    <a href="javascript:history.back()" class="btn btn-default">Back</a>
+    <table class="table table-striped">
+        <tr>
+{{columnsUp}}
+        <tr>
+        <tr>
+{{recordUp}}
+        <tr>
+    </table>
+@endsection

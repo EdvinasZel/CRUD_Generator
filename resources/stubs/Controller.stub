@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\{{modelName}}Request;
+use App\{{modelName}};
+
+class {{modelName}}Controller extends Controller
+{
+    public function index()
+    {
+        ${{modelNamePluralLowerCase}} = {{modelName}}::latest()->simplePaginate({{pagination}});
+
+        return view('{{modelNameSingularLowerCase}}Views.index', ['{{modelNamePluralLowerCase}}' => ${{modelNamePluralLowerCase}}]);
+    }
+
+    public function create()
+    {
+        return view('{{modelNameSingularLowerCase}}Views.create');
+    }
+
+    public function store({{modelName}}Request $request)
+    {
+        $request->validated();
+        {{modelName}}::create($request->all());
+
+        return redirect()->back();
+    }
+
+    public function show($id)
+    {
+        ${{modelNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
+
+        return view('{{modelNameSingularLowerCase}}Views.show', ['{{modelNameSingularLowerCase}}' => ${{modelNameSingularLowerCase}}]);
+    }
+
+    public function edit($id)
+    {
+        ${{modelNameSingularLowerCase}} = {{modelName}}::find($id);
+
+        return view('{{modelNameSingularLowerCase}}Views.edit', ['{{modelNameSingularLowerCase}}' => ${{modelNameSingularLowerCase}}]);
+    }
+
+    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularLowerCase}})
+    {
+        $request->validated();
+        ${{modelNameSingularLowerCase}}->update($request->all());
+
+        return redirect()->back();
+    }
+
+    public function destroy($id)
+    {
+        {{modelName}}::destroy($id);
+
+        return redirect()->back();
+    }
+}

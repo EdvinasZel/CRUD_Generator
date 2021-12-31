@@ -1,0 +1,13 @@
+@extends('layouts.app')
+@section('content')
+    <h1>{{modelName}} create page</h1>
+    <a href="javascript:history.back()" class="btn btn-default">Back</a>
+    <br>
+    <form action="{{ route('{{modelNamePluralLowerCase}}.store') }}" method="POST">
+{{createUp}}
+            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+
+@endsection

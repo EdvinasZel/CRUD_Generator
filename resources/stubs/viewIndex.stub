@@ -1,0 +1,30 @@
+@extends('layouts.app')
+@section('content')
+    <h1>{{modelName}} index page</h1>
+    <div class="form-action">
+            <a href="{{route('{{modelNamePluralLowerCase}}.create')}}" class="btn btn-success">Create</a>
+    </div>
+    <table class="table table-striped">
+        <tr>
+{{columnsUp}}
+            <th>Action</th>
+        </tr>
+    @foreach(${{modelNamePluralLowerCase}} as ${{modelNameSingularLowerCase}})
+        <tr>
+{{recordsUp}}
+            <td>
+                <form action="{{route('{{modelNamePluralLowerCase}}.destroy',${{modelNameSingularLowerCase}}->id)  }}" method="POST">
+
+                    <a href="{{route('{{modelNamePluralLowerCase}}.show', ${{modelNameSingularLowerCase}}->id)  }}" class="btn btn-info">Show</a>
+                    <a href="{{route('{{modelNamePluralLowerCase}}.edit', ${{modelNameSingularLowerCase}}->id)  }}" class="btn btn-primary">Edit</a>
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+
+                </form>
+            </td>
+        </tr>
+    @endforeach
+    <table>
+    {{${{modelNamePluralLowerCase}}->links()}}
+@endsection
