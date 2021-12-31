@@ -3,9 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use \Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use function PHPUnit\Framework\fileExists;
 
@@ -17,7 +15,7 @@ class CrudGeneratorCommand extends Command
 
     protected $description = 'Create CRUD operations';
 
-    //Form fileds types collection
+    //Form files types collection
     protected $typeLookup = [
         'string' => 'text',
         'char' => 'text',
@@ -77,25 +75,25 @@ class CrudGeneratorCommand extends Command
 
             $fk = $this->ask('Foreign key ( Default - none) (e.g. foreign(\'state\')->references(\'id\')->on(\'states\')->onDelete(\'cascade\')');
 
-            $relationships = $this->ask('Relationships to other models - structure Name;Type (e.g. Post;belongsTo)');
+            $relationships = $this->ask('Relationships to other models ( Keys are optional) - structure Name;Type;\'Key1\', \'Key2\'  (e.g. Post;belongsTo;\'foreign_key\', \'owner_key\')');
 
-        };
+        }
 
 
-        //Creating the files
-        $this->controller($name, $pagination);
-        $this->model($name, $pk, $relationships, $fields);
-        $this->request($name, $validation);
-        $this->migration($name, $fields, $fk);
+        //Creating files
+        //$this->controller($name, $pagination);
+        //$this->model($name, $pk, $relationships, $fields);
+        //$this->request($name, $validation);
+        //$this->migration($name, $fields, $fk);
 
         //Creating views
-        $this->viewIndex($name, $fields);
-        $this->viewShow($name, $fields);
-        $this->viewEdit($name, $fields);
-        $this->viewCreate($name, $fields);
+        //$this->viewIndex($name, $fields);
+        //$this->viewShow($name, $fields);
+        //$this->viewEdit($name, $fields);
+        //$this->viewCreate($name, $fields);
 
         //Appending new API routes to file
-        File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
+        //File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
 
         //Generation complete message
         $this->info('Files generated successfully!');
@@ -155,15 +153,27 @@ class CrudGeneratorCommand extends Command
         //Relationships
         $tabIndent = '    ';
 
-        if(!empty($relationships)) {
+        if(!empty($relationships) ) {
             $brokenRelationships = explode(';', $relationships);
-            $relationshipsName = $brokenRelationships[0];
-            $relationshipsType = $brokenRelationships[1];
+            if(count($brokenRelationships)==2) {
+                $relationshipsName = $brokenRelationships[0];
+                $relationshipsType = $brokenRelationships[1];
 
-            $relationshipsUp = "public function " . strtolower($relationshipsName) . "()\n"
-                . $tabIndent . "{\n"
-                . $tabIndent . $tabIndent . "return \$this->" . $relationshipsType . "(" . $relationshipsName . "::class);\n"
-                . $tabIndent . "}";
+                $relationshipsUp = "public function " . strtolower($relationshipsName) . "()\n"
+                    . $tabIndent . "{\n"
+                    . $tabIndent . $tabIndent . "return \$this->" . $relationshipsType . "(" . $relationshipsName . "::class);\n"
+                    . $tabIndent . "}";
+            }
+            if(count($brokenRelationships)==3) {
+                $relationshipsName = $brokenRelationships[0];
+                $relationshipsType = $brokenRelationships[1];
+                $relationshipsKey = $brokenRelationships[2];
+
+                $relationshipsUp = "public function " . strtolower($relationshipsName) . "()\n"
+                    . $tabIndent . "{\n"
+                    . $tabIndent . $tabIndent . "return \$this->" . $relationshipsType . "(" . $relationshipsName . "::class,". $relationshipsKey .");\n"
+                    . $tabIndent . "}";
+            }
         }
         else $relationshipsUp ='';
 
