@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use function PHPUnit\Framework\fileExists;
@@ -81,19 +83,19 @@ class CrudGeneratorCommand extends Command
 
 
         //Creating files
-        //$this->controller($name, $pagination);
-        //$this->model($name, $pk, $relationships, $fields);
-        //$this->request($name, $validation);
-        //$this->migration($name, $fields, $fk);
+        $this->controller($name, $pagination);
+        $this->model($name, $pk, $relationships, $fields);
+        $this->request($name, $validation);
+        $this->migration($name, $fields, $fk);
 
         //Creating views
-        //$this->viewIndex($name, $fields);
-        //$this->viewShow($name, $fields);
-        //$this->viewEdit($name, $fields);
-        //$this->viewCreate($name, $fields);
+        $this->viewIndex($name, $fields);
+        $this->viewShow($name, $fields);
+        $this->viewEdit($name, $fields);
+        $this->viewCreate($name, $fields);
 
         //Appending new API routes to file
-        //File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
+        File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
 
         //Generation complete message
         $this->info('Files generated successfully!');
