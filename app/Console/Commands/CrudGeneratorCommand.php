@@ -15,7 +15,7 @@ class CrudGeneratorCommand extends Command
     protected $signature = 'crud:generator
     {name : Class (singular) for example User}';
 
-    protected $description = 'Create CRUD operations';
+    protected $description = 'Create CRUD functionality';
 
     //Form files types collection
     protected $typeLookup = [
@@ -40,11 +40,6 @@ class CrudGeneratorCommand extends Command
         'double' => 'number',
         'float' => 'number',
     ];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {
@@ -84,15 +79,15 @@ class CrudGeneratorCommand extends Command
 
         //Creating files
         //$this->controller($name, $pagination);
-        //$this->model($name, $pk, $relationships, $fields);
+        $this->model($name, $pk, $relationships, $fields);
         //$this->request($name, $validation);
         //$this->migration($name, $fields, $fk);
 
         //Creating views
-        $this->viewIndex($name, $fields);
-        $this->viewShow($name, $fields);
-        $this->viewEdit($name, $fields);
-        $this->viewCreate($name, $fields);
+        //$this->viewIndex($name, $fields);
+        //$this->viewShow($name, $fields);
+        //$this->viewEdit($name, $fields);
+        //$this->viewCreate($name, $fields);
 
         //Appending new API routes to file
         //File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
