@@ -1,17 +1,20 @@
 @extends('layouts.app')
 @section('content')
-    <h1>{{modelName}} edit page</h1>
-    <a href="javascript:history.back()" class="btn btn-default">Back</a>
-    <br>
-    <strong>Id:</strong>
-    <h3>{{${{modelNameSingularLowerCase}}->id}}</h3>
+    <div class="row py-3">
+        <div class="col">
+            <h1>{{modelName}} edit page</h1>
+        </div>
+        <div class="col">
+            <a href="{{route('{{modelNamePluralLowerCase}}.index')}}" class="btn btn-info"><h3>Back</h3></a>
+        </div>
+    </div>
+    <hr>
+    <h4>Insert new values:</h4>
     <form action="{{ route('{{modelNamePluralLowerCase}}.update',${{modelNameSingularLowerCase}}->id) }}" method="POST">
             @csrf
             @method('PUT')
 {{updateUp}}
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
         </form>
 
 @endsection

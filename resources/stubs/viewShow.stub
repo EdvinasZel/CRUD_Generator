@@ -1,7 +1,15 @@
 @extends('layouts.app')
 @section('content')
-    <h1>{{modelName}} show page</h1>
-    <a href="javascript:history.back()" class="btn btn-default">Back</a>
+    <div class="row py-3">
+            <div class="col">
+                <h1>{{modelName}} create page</h1>
+            </div>
+            <div class="col">
+                <a href="{{route('{{modelNamePluralLowerCase}}.index')}}" class="btn btn-info"><h3>Back</h3></a>
+            </div>
+    </div>
+    <hr>
+    <h4>Selected {{modelName}} (ID - {{${{modelNameSingularLowerCase}}->id}}) information :</h4>
     <table class="table table-striped">
         <tr>
 {{columnsUp}}

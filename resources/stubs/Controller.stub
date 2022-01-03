@@ -24,7 +24,7 @@ class {{modelName}}Controller extends Controller
         $request->validated();
         {{modelName}}::create($request->all());
 
-        return redirect()->back();
+        return redirect('/api/{{modelNamePluralLowerCase}}');
     }
 
     public function show($id)
@@ -46,7 +46,7 @@ class {{modelName}}Controller extends Controller
         $request->validated();
         ${{modelNameSingularLowerCase}}->update($request->all());
 
-        return redirect()->back();
+        return redirect('/api/{{modelNamePluralLowerCase}}');
     }
 
     public function destroy($id)

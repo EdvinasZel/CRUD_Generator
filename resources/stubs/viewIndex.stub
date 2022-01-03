@@ -1,9 +1,17 @@
 @extends('layouts.app')
 @section('content')
-    <h1>{{modelName}} index page</h1>
-    <div class="form-action">
-            <a href="{{route('{{modelNamePluralLowerCase}}.create')}}" class="btn btn-success">Create</a>
+    <div class="row py-3">
+            <div class="col">
+                <h1>{{modelName}} index page</h1>
+            </div>
+            <div class="col">
+                <div class="form-action">
+                    <a href="{{route('{{modelNamePluralLowerCase}}.create')}}" class="btn btn-success"><h3>Create</h3></a>
+                </div>
+            </div>
     </div>
+    <hr>
+    <h4>{{modelName}}s inside database:</h4>
     <table class="table table-striped">
         <tr>
 {{columnsUp}}

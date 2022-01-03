@@ -62,7 +62,7 @@ class CrudGeneratorCommand extends Command
         //Handling user input
         if($this->confirm('Do you want to configure the generator parameters?', true)) {
 
-            $this->line('Press ENTER to insert defaults');
+            $this->info('Press ENTER to insert defaults');
 
             $fields = $this->ask('Please insert field names and parameters (e.g. integer(\'amount\');string(\'name\');');
 
@@ -77,7 +77,7 @@ class CrudGeneratorCommand extends Command
 
             $fk = $this->ask('Foreign key ( Default - none) (e.g. foreign(\'state\')->references(\'id\')->on(\'states\')->onDelete(\'cascade\')');
 
-            $relationships = $this->ask('Relationships to other models ( Keys are optional) - structure Name;Type;\'Key1\', \'Key2\'  (e.g. Post;belongsTo;\'foreign_key\', \'owner_key\')');
+            $relationships = $this->ask('Relationships to other models ( Keys are optional) - structure Name;Type;\'Key1\',\'Key2\'  (e.g. Post;belongsTo;\'foreign_key\', \'owner_key\')');
 
         }
 
@@ -86,13 +86,13 @@ class CrudGeneratorCommand extends Command
         //$this->controller($name, $pagination);
         //$this->model($name, $pk, $relationships, $fields);
         //$this->request($name, $validation);
-        $this->migration($name, $fields, $fk);
+        //$this->migration($name, $fields, $fk);
 
         //Creating views
-        //$this->viewIndex($name, $fields);
-        //$this->viewShow($name, $fields);
-        //$this->viewEdit($name, $fields);
-        //$this->viewCreate($name, $fields);
+        $this->viewIndex($name, $fields);
+        $this->viewShow($name, $fields);
+        $this->viewEdit($name, $fields);
+        $this->viewCreate($name, $fields);
 
         //Appending new API routes to file
         //File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
@@ -260,7 +260,6 @@ class CrudGeneratorCommand extends Command
         $differentFields = explode(';',$fields);
         $fieldsUp='';
         $tabIndent = '            ';
-
         if(!empty($fields)) {
             foreach ($differentFields as $field) {
                 $fieldsUp = $fieldsUp . "\$table->$field;\n" . $tabIndent;
@@ -357,12 +356,16 @@ class CrudGeneratorCommand extends Command
             [
                 '{{modelName}}',
                 '{{recordUp}}',
-                '{{columnsUp}}'
+                '{{columnsUp}}',
+                '{{modelNamePluralLowerCase}}',
+                '{{modelNameSingularLowerCase}}'
             ],
             [
                 $name,
                 $recordUp,
-                $columnsUp
+                $columnsUp,
+                strtolower(Str::plural($name)),
+                strtolower($name)
             ],
             $this->getStub('viewShow')
         );
@@ -386,8 +389,8 @@ class CrudGeneratorCommand extends Command
         foreach($getFieldNames as $field){
 
             $updateUp= $updateUp.$tabIndent.$tabIndent."<div class=\"form-group\">\n".
-            $tabIndent.$tabIndent.$tabIndent."<strong>".$field."</strong>\n".
-            $tabIndent.$tabIndent.$tabIndent."<input type=\"".$this->typeLookup[$getAttributeNames[$i]]."\" name=\"".$field."\" value=\"{{\$".$lowerName."->".$field."}}\" class=\"from-control\">\n".
+            $tabIndent.$tabIndent.$tabIndent."<label for='".$field."'>".$field."</label>\n".
+            $tabIndent.$tabIndent.$tabIndent."<input type=\"".$this->typeLookup[$getAttributeNames[$i]]."\" name=\"".$field."\" value=\"{{\$".$lowerName."->".$field."}}\" class=\"form-control\" id=\"".$field."\">\n".
             $tabIndent.$tabIndent."</div>\n";
             $i++;
         }
@@ -425,8 +428,8 @@ class CrudGeneratorCommand extends Command
         foreach($getFieldNames as $field){
 
             $createUp= $createUp.$tabIndent.$tabIndent."<div class=\"form-group\">\n".
-                $tabIndent.$tabIndent.$tabIndent."<strong>".$field."</strong>\n".
-                $tabIndent.$tabIndent.$tabIndent."<input type=\"".$this->typeLookup[$getAttributeNames[$i]]."\" name=\"".$field."\" value=\" \" class=\"from-control\">\n".
+                $tabIndent.$tabIndent.$tabIndent."<label for=\"".$field."\">".$field."</label>\n".
+                $tabIndent.$tabIndent.$tabIndent."<input type=\"".$this->typeLookup[$getAttributeNames[$i]]."\" name=\"".$field."\" class=\"form-control\" id=\"".$field."\">\n".
                 $tabIndent.$tabIndent."</div>\n";
             $i++;
         }

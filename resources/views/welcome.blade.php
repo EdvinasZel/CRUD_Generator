@@ -10,6 +10,10 @@
             <div class="bg-dark bg-opacity-25">
                 <small class="px-3">php artisan crud:generator {Name}</small>
             </div>
+            <p>Don't forget to run the migrations to create new table inside your database:</p>
+            <div class="bg-dark bg-opacity-25">
+                <small class="px-3">php artisan migrate</small>
+            </div>
             <p class="pt-2">Next you will have an option to configure some parameters. Write 'yes' or 'no' accordingly.</p>
             <p>Moving forward just follow the messages in your terminal, you will have an option to fill : </p>
             <ul>
@@ -21,6 +25,13 @@
                 <li>Set relationships to other Models in the application.</li>
             </ul>
             <b>NOTE: please fill the fields as it is shown in the examples. Otherwise the generator will fail.</b>
+            <hr>
+            <h3 class="text-center">To reach your generated views</h3>
+            <hr>
+            <p>To reach your generated views from your web browser simply follow this route:</p>
+            <div class="bg-dark bg-opacity-25">
+                <small class="px-3">yourCurrentRoute/api/{name}         name being what you used when initiating the generator but plural and lowercase.</small>
+            </div>
             <hr>
             <h3 class="text-center">Supported fields</h3>
             <hr>

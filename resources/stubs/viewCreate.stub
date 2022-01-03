@@ -1,13 +1,18 @@
 @extends('layouts.app')
 @section('content')
-    <h1>{{modelName}} create page</h1>
-    <a href="javascript:history.back()" class="btn btn-default">Back</a>
-    <br>
+    <div class="row py-3">
+            <div class="col">
+                <h1>Car create page</h1>
+            </div>
+            <div class="col">
+                <a href="{{route('{{modelNamePluralLowerCase}}.index')}}" class="btn btn-info"><h3>Back</h3></a>
+            </div>
+    </div>
+    <hr>
+    <h4>Insert desired values:</h4>
     <form action="{{ route('{{modelNamePluralLowerCase}}.store') }}" method="POST">
 {{createUp}}
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
         </form>
 
 @endsection
