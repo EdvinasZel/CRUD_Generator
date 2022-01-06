@@ -43,7 +43,6 @@ class CrudGeneratorCommand extends Command
 
     public function handle()
     {
-
         $name = $this->argument('name');
 
         //Default variables ( if user chooses not to input any parameters )
@@ -75,25 +74,31 @@ class CrudGeneratorCommand extends Command
             $relationships = $this->ask('Relationships to other models ( Keys are optional) - structure Name;Type;\'Key1\',\'Key2\'  (e.g. Post;belongsTo;\'foreign_key\', \'owner_key\')');
 
         }
-
+        $startTime= microtime(true);
 
         //Creating files
-        //$this->controller($name, $pagination);
+        $this->controller($name, $pagination);
         $this->model($name, $pk, $relationships, $fields);
-        //$this->request($name, $validation);
-        //$this->migration($name, $fields, $fk);
+        $this->request($name, $validation);
+        $this->migration($name, $fields, $fk);
 
         //Creating views
-        //$this->viewIndex($name, $fields);
-        //$this->viewShow($name, $fields);
-        //$this->viewEdit($name, $fields);
-        //$this->viewCreate($name, $fields);
+        $this->viewIndex($name, $fields);
+        $this->viewShow($name, $fields);
+        $this->viewEdit($name, $fields);
+        $this->viewCreate($name, $fields);
 
         //Appending new API routes to file
-        //File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
+        File::append(base_path('routes/api.php'), 'Route::resource(\'' . Str::plural(strtolower($name)) . "', App\Http\Controllers\\{$name}Controller::class);");
 
         //Generation complete message
+
         $this->info('Files generated successfully!');
+
+        //Catching execution time
+        $endTime= microtime(true);
+        $execTime=($endTime-$startTime)*1000;
+        $this->info('It took '.$execTime.' seconds to generate the files!');
     }
 
     protected function getStub($type)
@@ -108,6 +113,7 @@ class CrudGeneratorCommand extends Command
     protected function getNames($fields)
     {
         $seperator ='\'';
+
         $newFieldNames = explode($seperator,$fields);
         $records = count($newFieldNames);
 
@@ -122,6 +128,7 @@ class CrudGeneratorCommand extends Command
     {
         $seperator ='(';
         $result[]='';
+
         $newFieldAttributes = explode($seperator,$fields);
         $records = count($newFieldAttributes);
 
@@ -142,14 +149,15 @@ class CrudGeneratorCommand extends Command
 
     protected function model($name, $pk, $relationships, $fields)
     {
+        $fillableUp='';
+        $tabIndent = '    ';
+
         //Primary Key
         if(!empty($pk)){
             $pk = "protected \$primaryKey ='".$pk."';";
         }
 
         //Relationships
-        $tabIndent = '    ';
-
         if(!empty($relationships) ) {
             $brokenRelationships = explode(';', $relationships);
             if(count($brokenRelationships)==2) {
@@ -171,11 +179,11 @@ class CrudGeneratorCommand extends Command
                     . $tabIndent . $tabIndent . "return \$this->" . $relationshipsType . "(" . $relationshipsName . "::class,". $relationshipsKey .");\n"
                     . $tabIndent . "}";
             }
+            else $relationshipsUp ='';
         }
         else $relationshipsUp ='';
 
         //Adding Fillable from $fields
-        $fillableUp='';
         $fieldNames = $this->getNames($fields);
 
         foreach($fieldNames as $field){
@@ -248,13 +256,15 @@ class CrudGeneratorCommand extends Command
 
     protected function migration($name, $fields, $fk)
     {
+        $fieldsUp='';
+        $tabIndent = '            ';
+
         //Creating migration
         Artisan::call('make:migration create_' . strtolower(Str::plural($name)) . '_table --create=' . strtolower(Str::plural($name)));
 
         //Handling fields
         $differentFields = explode(';',$fields);
-        $fieldsUp='';
-        $tabIndent = '            ';
+
         if(!empty($fields)) {
             foreach ($differentFields as $field) {
                 $fieldsUp = $fieldsUp . "\$table->$field;\n" . $tabIndent;
@@ -272,7 +282,7 @@ class CrudGeneratorCommand extends Command
 
         $template= str_replace(
             [
-                '{{fields}}'
+                '//fields'
             ],
             [
                 $fieldsUp
@@ -286,10 +296,12 @@ class CrudGeneratorCommand extends Command
 
     protected function viewIndex($name, $fields)
     {
-        //Table column names
         $tabIndent='    ';
         $columnsUp='';
+        $lowerName =  strtolower($name);
+        $recordsUp='';
 
+        //Table column names
         $getFieldNames= $this->getNames($fields);
 
         foreach ($getFieldNames as $fields) {
@@ -297,8 +309,6 @@ class CrudGeneratorCommand extends Command
         }
 
         //Records
-        $lowerName =  strtolower($name);
-        $recordsUp='';
         foreach ($getFieldNames as $fields) {
             $recordsUp = $recordsUp . $tabIndent . $tabIndent . $tabIndent . "<td>{{\$".$lowerName."->".$fields."}}<td>\n";
         }
@@ -332,12 +342,13 @@ class CrudGeneratorCommand extends Command
 
     protected function viewShow($name, $fields)
     {
-        $getFieldNames= $this->getNames($fields);
-        $folderName = $this->getFolderName($name);
         $recordUp='';
         $columnsUp='';
         $tabIndent='    ';
+
         $lowerName =  strtolower($name);
+        $getFieldNames= $this->getNames($fields);
+        $folderName = $this->getFolderName($name);
 
         foreach ($getFieldNames as $fields) {
             $columnsUp = $columnsUp . $tabIndent . $tabIndent . $tabIndent . "<th>".$fields."<th>\n";
@@ -371,14 +382,15 @@ class CrudGeneratorCommand extends Command
 
     protected function viewEdit($name, $fields)
     {
-        $arr=$this->getNames($fields);
-        $getAttributeNames = $this->getAttributes($fields);
-        $getFieldNames= array_values($arr);
-
-        $folderName = $this->getFolderName($name);
         $updateUp='';
         $tabIndent='    ';
         $lowerName=strtolower($name);
+
+        $arr=$this->getNames($fields);
+        $getAttributeNames = $this->getAttributes($fields);
+        $getFieldNames= array_values($arr);
+        $folderName = $this->getFolderName($name);
+
         $i=0;
 
         foreach($getFieldNames as $field){
@@ -411,13 +423,13 @@ class CrudGeneratorCommand extends Command
 
     protected function viewCreate($name, $fields)
     {
+        $createUp='';
+        $tabIndent='    ';
         $arr=$this->getNames($fields);
         $getAttributeNames = $this->getAttributes($fields);
         $getFieldNames= array_values($arr);
-
         $folderName = $this->getFolderName($name);
-        $createUp='';
-        $tabIndent='    ';
+
         $i=0;
 
         foreach($getFieldNames as $field){
