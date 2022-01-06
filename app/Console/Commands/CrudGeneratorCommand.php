@@ -62,16 +62,16 @@ class CrudGeneratorCommand extends Command
 
             $validation = $this->ask('Validation rules for the fields (e.g. \'title\' => \'required\', \'name\' => \'min:10\')');
 
-            $pk = $this->ask('Primary key ( Default - none ) (e.g. id)');
+            $pk = $this->ask('Primary key (Default - none) (e.g. id)');
 
-            $pagination = $this->ask('Insert pagination number ( Default - 5 )');
+            $pagination = $this->ask('Insert pagination number (Default - 5)');
             if($pagination == null){
                 $pagination = 5;
             }
 
-            $fk = $this->ask('Foreign key ( Default - none) (e.g. foreign(\'state\')->references(\'id\')->on(\'states\')->onDelete(\'cascade\')');
+            $fk = $this->ask('Foreign key (Default - none) (e.g. foreign(\'state\')->references(\'id\')->on(\'states\')->onDelete(\'cascade\')');
 
-            $relationships = $this->ask('Relationships to other models ( Keys are optional) - structure Name;Type;\'Key1\',\'Key2\'  (e.g. Post;belongsTo;\'foreign_key\', \'owner_key\')');
+            $relationships = $this->ask('Relationships to other models (Keys are optional) - structure Name;Type;\'Key1\',\'Key2\'  (e.g. Post;belongsTo;\'foreign_key\', \'owner_key\')');
 
         }
         $startTime= microtime(true);
@@ -97,7 +97,7 @@ class CrudGeneratorCommand extends Command
 
         //Catching execution time
         $endTime= microtime(true);
-        $execTime=($endTime-$startTime)*1000;
+        $execTime=($endTime-$startTime);
         $this->info('It took '.$execTime.' seconds to generate the files!');
     }
 
